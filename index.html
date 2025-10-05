@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>EJERCICIO SOBRE GENERACIÓN DE UN PANEL DE GRÁFICOS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        :root {
+            --bg: #ebebeb;
+            --card: #2c3849;
+            --card-end: #8c8ba3;
+            --ink: #fff;
+            --muted: #babcca;
+            --grid: rgba(255, 255, 255, .08);
+
+            /* colores para gráficos*/
+            --first: #374D70;
+            --second: #617037;
+            --third: #E4F0C2;
+            --fourth: #A2B0C5;
+            --fifth: #703E37;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--ink);
+            font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial
+        }
+
+        header {
+            padding: 24px clamp(16px, 4vw, 48px);
+            border-bottom: 1px solid var(--grid);
+            position: sticky;
+            top: 0;
+            background: var(--card);
+            z-index: 9999 !important;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(20px, 2.6vw, 34px)
+        }
+
+        .sub {
+            color: var(--muted);
+            margin-top: 6px
+        }
+
+        main {
+            padding: 28px clamp(16px, 4vw, 48px) 56px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 22px;
+            max-width: 1400px;
+            margin-inline: auto
+        }
+
+        .card {
+            grid-column: span 12;
+            background: linear-gradient(180deg, var(--card), var(--card-end));
+            border: 1px solid var(--grid);
+            border-radius: 18px;
+            padding: 18px
+        }
+
+        .card.half {
+            grid-column: span 6
+        }
+
+        .card h2 {
+            margin: 4px 0 12px;
+            font-size: clamp(16px, 1.6vw, 20px);
+            font-weight: 700
+        }
+
+        .chart {
+            width: 100%;
+            height: 340px
+        }
+
+        .table {
+            overflow: auto;
+            border-top: 1px dashed var(--grid);
+            margin-top: 10px
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 8px
+        }
+
+        th,
+        td {
+            padding: 8px 10px;
+            text-align: right;
+            border-bottom: 1px dashed var(--grid)
+        }
+
+        th:first-child,
+        td:first-child {
+            text-align: left
+        }
+
+        th {
+            color: var(--muted)
+        }
+
+        .source {
+            grid-column: span 12;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.4
+        }
+
+        .google-visualization-table-table {
+            background: transparent !important;
+            border-collapse: collapse
+        }
+
+        .google-visualization-table-table td,
+        .google-visualization-table-table th {
+            border-color: #2a335e !important
+        }
+
+        .gvh {
+            background: #111833 !important
+        }
+
+        .gvh th,
+        .gvh td {
+            color: var(--muted) !important;
+            font-weight: 600
+        }
+
+        .gvr td {
+            background: #0f1733 !important;
+            color: #fff !important
+        }
+
+        .gvo td {
+            background: #0c1330 !important;
+            color: #fff !important
+        }
+
+        .gvtd {
+            color: #fff !important
+        }
+
+        .gvhover td {
+            background: #1a2552 !important
+        }
+
+        .gvsel td {
+            background: #153a2c !important;
+            color: #fff !important
+        }
+
+        .gvnum {
+            color: var(--muted) !important
+        }
+    </style>
+    <script>
+        google.charts.load('current', { packages: ['corechart', 'bar', 'table'] });
+        google.charts.setOnLoadCallback(draw);
+
+        function draw() {
+            const years = [2008, 2010, 2012, 2014, 2016, 2018];
+
+            const evolucion_pobreza = google.visualization.arrayToDataTable([
+                ['Año', '% pobreza', '% pobreza extrema'],
+                [2008, 44.4, 11.1],
+                [2010, 46.1, 11.4],
+                [2012, 45.5, 9.8],
+                [2014, 46.2, 9.5],
+                [2016, 43.6, 7.6],
+                [2018, 41.9, 7.4]
+            ]);
+            const grafico1 = {
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                hAxis:
+                {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    gridlines: {
+                        color: '#2a335e'
+                    }
+                }
+                ,
+                vAxis: {
+                    minValue: 0,
+                    textStyle: { color: '#fff' },
+                    gridlines: {
+                        color: '#2a335e'
+
+                    }
+                }, chartArea: {
+                    left: 50,
+                    top: 20,
+                    right: 10,
+                    bottom: 60
+
+                },
+                colors: ['#6AA1D9', '#D9726A']
+            };
+            new google.visualization.LineChart(document.getElementById('ch1')).draw(evolucion_pobreza, grafico1);
+
+            const pobreza_por_ingresos = google.visualization.arrayToDataTable([
+                ['Año', '% < línea pobreza', '% < línea pobreza extrema'],
+                [2008, 49.0, 16.8],
+                [2010, 52.0, 18.8],
+                [2012, 51.6, 20.0],
+                [2014, 53.2, 20.6],
+                [2016, 48.8, 17.5],
+                [2018, 48.8, 16.8]
+            ]);
+            const grafico2 = {
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                vAxis: {
+                    minValue: 0,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    gridlines: {
+                        color: '#2a335e'
+                    }
+                },
+                chartArea: {
+                    left: 50,
+                    top: 20,
+                    right: 10,
+                    bottom: 60
+                },
+                colors: ['#B3DB39', '#D9726A'],
+                bar: {
+                    groupWidth: '62%'
+                }
+            };
+            new google.visualization.ColumnChart(document.getElementById('ch2')).draw(pobreza_por_ingresos, grafico2);
+
+            const indicadores_carencia_social = google.visualization.arrayToDataTable([
+                ['Año', 'Rezago educativo', 'Servicios de salud', 'Seguridad social', 'Calidad y espacios vivienda', 'Servicios básicos vivienda', 'Alimentación'],
+                [2008, 21.9, 38.4, 65.0, 17.7, 22.9, 21.7],
+                [2010, 20.7, 29.2, 60.7, 15.2, 21.2, 24.8],
+                [2012, 19.2, 21.5, 61.2, 13.6, 21.2, 23.3],
+                [2014, 18.7, 18.2, 58.5, 12.3, 21.2, 23.4],
+                [2016, 17.9, 15.5, 55.8, 11.8, 19.3, 20.1],
+                [2018, 16.9, 16.2, 57.3, 11.1, 19.8, 20.4]
+            ]);
+            const grafico3 = {
+                isStacked: false,
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                vAxis: {
+                    minValue: 0,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    gridlines: {
+                        color: '#2a335e'
+                    }
+                },
+                chartArea: {
+                    left: 60,
+                    top: 20,
+                    right: 10,
+                    bottom: 80
+                },
+                colors: ['#6AA1D9', '#CCD96A', '#D9726A', '#BD7BDB', '#DB8138', '#55465C'],
+                bar: {
+                    groupWidth: '70%'
+                }
+            };
+            new google.visualization.ColumnChart(document.getElementById('ch3')).draw(indicadores_carencia_social, grafico3);
+
+            const privacion_social = google.visualization.arrayToDataTable([
+                ['Año', '% con ≥1 carencia', '% con ≥3 carencias'],
+                [2008, 76.6, 31.7],
+                [2010, 74.2, 28.2],
+                [2012, 74.1, 23.9],
+                [2014, 72.4, 22.1],
+                [2016, 70.4, 18.7],
+                [2018, 71.2, 18.8]
+            ]);
+            const grafico4 = {
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                vAxis: {
+                    minValue: 0,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    gridlines: {
+                        color: '#2a335e'
+                    }
+                },
+                chartArea: {
+                    left: 60,
+                    top: 20,
+                    right: 10,
+                    bottom: 60
+                },
+                colors: ['#CCD96A', '#D9726A']
+            };
+            new google.visualization.LineChart(document.getElementById('ch4')).draw(privacion_social, grafico4);
+
+            const no_pobre_no_vulnerable = google.visualization.arrayToDataTable([
+                ['Año', '% no pobre ni vulnerable'],
+                [2008, 18.7],
+                [2010, 19.9],
+                [2012, 19.8],
+                [2014, 20.5],
+                [2016, 22.6],
+                [2018, 21.9]
+            ]);
+            const grafico5 = {
+                backgroundColor: 'transparent',
+                legend: {
+                    position: 'bottom',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                hAxis: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                vAxis: {
+                    minValue: 0,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    gridlines: {
+                        color: '#2a335e'
+                    }
+                },
+                chartArea: {
+                    left: 60,
+                    top: 20,
+                    right: 10,
+                    bottom: 60
+                },
+                colors: ['#6AA1D9'],
+                bar: {
+                    groupWidth: '62%'
+                }
+            };
+            new google.visualization.ColumnChart(document.getElementById('ch5')).draw(no_pobre_no_vulnerable, grafico5);
+
+            // drawTable('tabla1', evolucion_pobreza);
+            // drawTable('tabla2', pobreza_por_ingresos);
+            // drawTable('tabla3', indicadores_carencia_social);
+            // drawTable('tabla4', privacion_social);
+            // drawTable('tabla5', no_pobre_no_vulnerable);
+        }
+
+        function drawTable(id, data) {
+            const view = new google.visualization.DataView(data);
+            new google.visualization.Table(document.getElementById(id)).draw(view, {
+                showRowNumber: false,
+                width: '100%',
+                height: '100%',
+                alternatingRowStyle: true,
+                cssClassNames: {
+                    headerRow: 'gvh',
+                    tableRow: 'gvr',
+                    oddTableRow: 'gvo'
+
+                }
+            });
+        }
+    </script>
+    <style>
+        .gvh {
+            background: #111833;
+            color: var(--muted);
+            font-weight: 600
+        }
+
+        .gvr {
+            background: transparent;
+            color: #fff
+        }
+
+        .gvo {
+            background: rgba(255, 255, 255, .02);
+            color: #fff
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>EJERCICIO SOBRE GENERACIÓN DE UN PANEL DE GRÁFICOS</h1>
+        <div class="sub">A8. Ejercicio</div>
+    </header>
+    <main>
+        <section class="card half">
+            <h2>1) Evolución: pobreza y pobreza extrema</h2>
+            <div id="ch1" class="chart"></div>
+            <div class="table" id="tabla1"></div>
+        </section>
+        <section class="card half">
+            <h2>2) Bienestar: ingreso bajo líneas de pobreza</h2>
+            <div id="ch2" class="chart"></div>
+            <div class="table" id="tabla2"></div>
+        </section>
+        <section class="card">
+            <h2>3) Carencias sociales</h2>
+            <div id="ch3" class="chart"></div>
+            <div class="table" id="tabla3"></div>
+        </section>
+        <section class="card half">
+            <h2>4) Privación social</h2>
+            <div id="ch4" class="chart"></div>
+            <div class="table" id="tabla4"></div>
+        </section>
+        <section class="card half">
+            <h2>5) No pobre y no vulnerable</h2>
+            <div id="ch5" class="chart"></div>
+            <div class="table" id="tabla5"></div>
+        </section>
+    </main>
+</body>
+
+</html>
+F
